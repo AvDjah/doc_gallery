@@ -1,4 +1,9 @@
+require "securerandom"
+
 class DocumentsController < ApplicationController
+  include ApplicationHelper
+  include DocumentsHelper
+
   before_action :set_document, only: %i[ show edit update destroy ]
 
   # GET /documents or /documents.json
@@ -13,6 +18,42 @@ class DocumentsController < ApplicationController
   # GET /documents/new
   def new
     @document = Document.new
+    @categories = Category.all.where(level: 1, parent_category_id: nil)
+  end
+
+  def new_with_select
+    puts "Here with request params: #{params}"
+    level = params["level"].to_i
+
+    begin
+      current_selected = Category.find(params["id"].to_i)
+    rescue ActiveRecord::RecordNotFound
+
+      # Return an empty category
+      current_selected = Category.new parent_category_id: ""
+
+      respond_to do |format|
+        format.turbo_stream do
+          puts "Rendering empty turbo"
+          render turbo_stream: turbo_stream.replace("category_#{level + 1}", partial: "categories/empty_subcategory",
+          locals: { level: level + 1 })
+        end
+      end
+      return
+    end
+
+
+    categories = Category.all.where(parent_category_id: current_selected.parent_category_id)
+    sub_categories = Category.all.where(parent_category_id: current_selected.id)
+
+    respond_to do |format|
+      format.html { render plain: "heelo Wold" }
+      format.turbo_stream do
+        puts "Rendering turbooo"
+        render turbo_stream: turbo_stream.replace("category_#{level}", partial: "categories/subcategory_select",
+        locals: { categories: categories, level: level, sub_categories: sub_categories, selected_id: params["id"], selected_parent: nil })
+      end
+    end
   end
 
   # GET /documents/1/edit
@@ -21,7 +62,24 @@ class DocumentsController < ApplicationController
 
   # POST /documents or /documents.json
   def create
+    category_selected_param = get_category_selected_params params
+
+    if category_selected_param["id"] == nil
+      @document = Document.new
+      @document.errors.add("", "Please select a category. It cannot be empty.")
+      @categories = Category.all.where(level: 1, parent_category_id: nil)
+      render :new, status: :unprocessable_entity
+      return
+    end
+
+    document_params["parent_category_id"] = category_selected_param["id"]
     @document = Document.new(document_params)
+    document_uuid = SecureRandom.uuid.to_s
+
+    @document.document_guid = document_uuid
+
+    save_document_file params, document_uuid
+
 
     respond_to do |format|
       if @document.save
@@ -65,6 +123,6 @@ class DocumentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def document_params
-      params.fetch(:document, {})
+      params.fetch(:document, {}).permit!
     end
 end

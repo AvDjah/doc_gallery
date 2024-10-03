@@ -19,24 +19,30 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <div class="container flex flex-row justify-start items-center gap-4 mx-auto bg-green-600 p-4 rounded-lg mt-4" >
+    <div class="container flex flex-row justify-start items-center gap-4 mx-auto p-4 rounded-lg mt-4">
         <div class="w-12 h-12 rounded-lg" >
           <%= image_tag 'logo.png', class: "rounded-xl" %>
         </div>
-        <div class="text-4xl font-extrabold text-white underline decoration-white"  >
-          Doc Gallery
+        <div class="text-4xl font-extrabold text-green-800 lora-font underline decoration-white">
+          <%= link_to 'Doc Gallery', home_index_path %>
         </div>
-        <div class="ms-4" >
-          <%= link_to "All Categories", :categories, class: "bg-green-500 hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %> 
+        <div class="ms-4">
+          <%= link_to "All Categories", :categories, class: "bg-green-500 hover:ring-2 hover:ring-green-600 transition-all ease-in-out hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %>
         </div>
-        <div class="ms-4"  >
-          <%= link_to "New Category", :new_category, class: "bg-green-500 hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %>
+        <div class="ms-4">
+          <%= link_to "New Category", :new_category, class: "bg-green-500 hover:ring-2 hover:ring-green-600 transition-all ease-in-out hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %>
+        </div>
+        <div class="ms-4">
+          <%= link_to "Upload Document", :new_document, class: "bg-green-500 hover:ring-2 hover:ring-green-600 transition-all ease-in-out hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %>
         </div>
     </div>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <main class="container mx-auto mt-16 px-5 flex">
       <%= yield %>
     </main>
   </body>

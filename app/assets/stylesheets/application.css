@@ -20,3 +20,19 @@ label {
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
 }
+
+.lora-font {
+    font-family: "Lora", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.header-bg {
+    background: linear-gradient(114.41deg, #93e2aa 20.74%, #abff84 65.5%);;
+}
+
+.info-box {
+    background: rgb(202,255,198);
+    background: linear-gradient(90deg, rgba(202,255,198,1) 0%, rgba(108,255,137,0.42062762605042014) 100%);
+}
