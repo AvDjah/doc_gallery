@@ -1,0 +1,16 @@
+
+<div class="flex flex-col gap-2" >
+    <div id="categories_0" >
+        <%= form.label "level_0", "Select Parent (Or leave empty to add at this level)" %>
+        <%= form.select "level_0", options_for_select(@categories.map { |c| [c.name,c.id] }, ""), {
+            prompt: "Select Parent",
+        }, class: "block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
+        data: { category_target: "level", level: 1 } %>
+    </div>
+
+    <div class="block" id="categories_1" >
+        
+    </div>
+</div>
+
+

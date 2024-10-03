@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Doc Gallery" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%# TODO: Added for development purposes, remove for production  %>
+    <meta name="turbo-prefetch" content="false">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <div class="container flex flex-row justify-start items-center gap-4 mx-auto bg-green-600 p-4 rounded-lg mt-4" >
+        <div class="w-12 h-12 rounded-lg" >
+          <%= image_tag 'logo.png', class: "rounded-xl" %>
+        </div>
+        <div class="text-4xl font-extrabold text-white underline decoration-white"  >
+          Doc Gallery
+        </div>
+        <div class="ms-4" >
+          <%= link_to "All Categories", :categories, class: "bg-green-500 hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %> 
+        </div>
+        <div class="ms-4"  >
+          <%= link_to "New Category", :new_category, class: "bg-green-500 hover:bg-white hover:text-green-600 text-white p-3 rounded-lg  " %>
+        </div>
+    </div>
+    <main class="container mx-auto mt-28 px-5 flex">
+      <%= yield %>
+    </main>
+  </body>
+</html>
