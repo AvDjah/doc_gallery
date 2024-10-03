@@ -13,7 +13,19 @@
  *= require_tree .
  *= require_self
  */
+body {
+    background-image: linear-gradient(130deg,
+            hsl(105deg 86% 97%) 0%,
+            hsl(100deg 95% 96%) 8%,
+            hsl(94deg 98% 95%) 17%,
+            hsl(90deg 98% 93%) 25%,
+            hsl(85deg 98% 91%) 33%,
+            hsl(81deg 96% 90%) 42%,
+            hsl(76deg 95% 88%) 50%,
+            hsl(72deg 93% 86%) 58%);
 
+    height: 100vh;
+}
 
 label {
     display: block;
@@ -27,12 +39,18 @@ label {
     font-weight: 500;
     font-style: normal;
 }
+/* 
+div {
+    border: 1px solid greenyellow;
+} */
 
-.header-bg {
-    background: linear-gradient(114.41deg, #93e2aa 20.74%, #abff84 65.5%);;
-}
+
+/* .header-bg {
+    background: linear-gradient(114.41deg, #93e2aa 20.74%, #abff84 65.5%);
+    ;
+} */
 
 .info-box {
-    background: rgb(202,255,198);
-    background: linear-gradient(90deg, rgba(202,255,198,1) 0%, rgba(108,255,137,0.42062762605042014) 100%);
+    background: rgb(202, 255, 198);
+    background: linear-gradient(90deg, rgba(202, 255, 198, 1) 0%, rgba(108, 255, 137, 0.42062762605042014) 100%);
 }

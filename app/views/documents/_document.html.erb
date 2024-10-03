@@ -1,2 +1,12 @@
-<div id="<%= dom_id document %>">
+<div id="<%= dom_id document %>" class="inline-block bg-green-50 my-3 md:p-8 p-4 rounded-lg text-lg" >
+    <div>
+        <span>Name: </span>
+        <span class="text-green-900 font-bold" ><%= document.title %></span>
+    </div>
+    <div>
+        <span>
+            Category: 
+        </span>
+        <span class="text-green-900 font-bold"><%= document.parent_category.name %></span>
+    </div>
 </div>

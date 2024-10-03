@@ -12,7 +12,7 @@
 
   <div id="categories" class="min-w-full mt-4">
       <% @categories.each do |category| %>
-        <div class="flex flex-row justify-between" >
+        <div class="flex flex-row justify-between">
           <%= render category %>
           <p>
             <%= link_to "Show this category", category, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>

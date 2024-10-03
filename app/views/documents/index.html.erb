@@ -1,21 +1,63 @@
-<div class="w-full">
+<div class="w-full bg-gray-50 rounded-lg md:p-8 p-3">
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
   <% content_for :title, "Documents" %>
-
   <div class="flex justify-between items-center">
     <h1 class="font-bold text-4xl">Documents</h1>
     <%= link_to "New document", new_document_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
   </div>
+  <div class="mt-8 w-full" >
+      <div class="text-3xl" >
+        Search content
+      </div>
+      <div>
+          <div>
+              <label for="">Enter Text</label>
+              <div class="flex md:flex-row flex-col items-center" >
+                <%= form_with url: documents_path, method: :get, class: "w-full" do |form| %>
+                  <%= form.text_field :search_query, class: "p-2 w-full rounded-lg outline-none ring-1 ring-green-600 focus:ring-2" %>
+                  <button class="my-3 px-5 py-1 bg-blue-600  rounded-lg text-white font-semibold" >Search</button>
+                <% end %>
+              </div>
+          </div>
+      </div>
+      <div>
+          <div>
+
+          </div>
+      </div>
+  </div>
+  <div class="my-3 p-2 bg-green-50 rounded-lg" >
+    <div class="text-xl my-2 font-bold lora-font" >
+      Results
+    </div>
+    <% if @result != nil %>
+      <% @result.each.with_index do |hit,index| %>
+        <div class="my-2 text-lg flex flex-row gap-4 ring-2 ring-green-700 p-4" >
+          <div class="font-bold text-green-800" ><%= index + 1 %>.</div>
+          <div>
+            <div>
+              Name: <span><%= hit["_source"]["title"] %></span>
+            </div>
+            <div>
+              Created By: <span><%= hit["_source"]["created_by"] %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 
   <div id="documents" class="min-w-full">
     <% @documents.each do |document| %>
-      <%= render document %>
-      <p>
-        <%= link_to "Show this document", document, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-      </p>
+      <div class="flex md:flex-row flex-col items-center gap-3" >
+        <%= render document %>
+        <p>
+          <%= link_to "Show this document", document, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+        </p>
+      </div>
     <% end %>
   </div>
 </div>

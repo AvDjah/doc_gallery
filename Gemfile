@@ -1,7 +1,10 @@
 source "https://rubygems.org"
 
-gem "foreman"
-gem "erb_lint"
+
+gem "elasticsearch"
+gem "htmlbeautifier"
+gem "dotenv-rails"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]

@@ -3,11 +3,23 @@ require "securerandom"
 class DocumentsController < ApplicationController
   include ApplicationHelper
   include DocumentsHelper
+  include ElasticHelper
 
   before_action :set_document, only: %i[ show edit update destroy ]
 
   # GET /documents or /documents.json
   def index
+    search_query = params["search_query"]
+
+    if search_query != nil and search_query.length > 0
+      result = elastic_search_content search_query.to_s
+    end
+
+    @result = nil
+    if result != nil
+      @result = result["hits"]["hits"]
+    end
+
     @documents = Document.all
   end
 
@@ -64,6 +76,9 @@ class DocumentsController < ApplicationController
   def create
     category_selected_param = get_category_selected_params params
 
+    document_text_content = params["text_content"]["text"]
+
+
     if category_selected_param["id"] == nil
       @document = Document.new
       @document.errors.add("", "Please select a category. It cannot be empty.")
@@ -83,6 +98,16 @@ class DocumentsController < ApplicationController
 
     respond_to do |format|
       if @document.save
+
+        index_document_result = save_data_to_elastic @document, document_text_content
+
+        if index_document_result == false
+          puts "Could not index document data, hence discarding document."
+          @document.destroy!
+        else
+          puts "Successfully indexed document"
+        end
+
         format.html { redirect_to document_url(@document), notice: "Document was successfully created." }
         format.json { render :show, status: :created, location: @document }
       else
@@ -124,5 +149,33 @@ class DocumentsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def document_params
       params.fetch(:document, {}).permit!
+    end
+
+    ###
+    # @description: Creates an hash to be inserted in the elastic search index
+    # @param document: Document
+    # @return {any}: Hash
+    ###
+    def get_hash_data_of_document(document)
+      h_doc = {
+        category_name: document.parent_category.name,
+        created_by: document.parent_category.created_by,
+        title: document.title,
+        id: document.id
+      }
+      h_doc
+    end
+
+    def save_data_to_elastic(document, text_content)
+      begin
+        document_h = get_hash_data_of_document document
+        document_h["text_content"] = text_content
+
+        Elastic_client.index(index: Elastic_index_name, body: document_h)
+        true
+      rescue => e
+        puts "Error indexing document: #{e}"
+        false
+      end
     end
 end
