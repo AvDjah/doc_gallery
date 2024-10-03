@@ -1,0 +1,29 @@
+<div id="results" class="my-3 p-2 bg-green-50 rounded-lg" >
+  <% if @result != nil %>
+    <div class="text-xl my-2 font-bold lora-font" >
+      Results
+    </div>
+    <% if @result.length > 0  %>
+      <% @result.each.with_index do |hit,index| %>
+        <div class="my-2 text-lg flex flex-row gap-4 ring-2 ring-green-700 p-4" >
+          <div class="font-bold text-green-800" ><%= index + 1 %>.</div>
+          <div>
+            <div>
+              Category: <span class="text-green-700 font-bold" ><%= hit["_source"]["category_name"] %></span>
+            </div>
+            <div>
+              Name: <span><%= hit["_source"]["title"] %></span>
+            </div>
+            <div>
+              Created By: <span><%= hit["_source"]["created_by"] %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div>
+        0 results found.
+      </div>
+    <% end %>
+  <% end %>
+</div>

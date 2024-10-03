@@ -9,10 +9,10 @@ class DocumentsController < ApplicationController
 
   # GET /documents or /documents.json
   def index
-    search_query = params["search_query"]
+    @search_query = params["search_query"]
 
-    if search_query != nil and search_query.length > 0
-      result = elastic_search_content search_query.to_s
+    if @search_query != nil and @search_query.length > 0
+      result = elastic_search_content @search_query.to_s
     end
 
     @result = nil
@@ -21,6 +21,13 @@ class DocumentsController < ApplicationController
     end
 
     @documents = Document.all
+
+    respond_to do |format|
+      format.html { render :index }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("results", partial: "results")
+      end
+    end
   end
 
   # GET /documents/1 or /documents/1.json
@@ -93,22 +100,31 @@ class DocumentsController < ApplicationController
 
     @document.document_guid = document_uuid
 
-    save_document_file params, document_uuid
+    uploaded_file = params[:document_file]
+
+    save_result = save_document_file uploaded_file, document_uuid
+    if save_result == true
+      pdf_content_text = extract_content_from_pdf uploaded_file
+      if pdf_content_text[0] != false and pdf_content_text[1] != ""
+        index_document_result = save_data_to_elastic @document, pdf_content_text
+      end
+    end
 
 
     respond_to do |format|
       if @document.save
 
-        index_document_result = save_data_to_elastic @document, document_text_content
-
-        if index_document_result == false
-          puts "Could not index document data, hence discarding document."
-          @document.destroy!
-        else
-          puts "Successfully indexed document"
+        if !document_text_content.empty?
+          index_document_result = save_data_to_elastic @document, document_text_content
+          if index_document_result == false
+            puts "Could not index document data, hence discarding document."
+            @document.destroy!
+          else
+            puts "Successfully indexed document"
+          end
         end
 
-        format.html { redirect_to document_url(@document), notice: "Document was successfully created." }
+        format.html { redirect_to documents_path, notice: "Document was successfully created." }
         format.json { render :show, status: :created, location: @document }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -151,31 +167,9 @@ class DocumentsController < ApplicationController
       params.fetch(:document, {}).permit!
     end
 
-    ###
-    # @description: Creates an hash to be inserted in the elastic search index
-    # @param document: Document
-    # @return {any}: Hash
-    ###
-    def get_hash_data_of_document(document)
-      h_doc = {
-        category_name: document.parent_category.name,
-        created_by: document.parent_category.created_by,
-        title: document.title,
-        id: document.id
-      }
-      h_doc
-    end
-
-    def save_data_to_elastic(document, text_content)
-      begin
-        document_h = get_hash_data_of_document document
-        document_h["text_content"] = text_content
-
-        Elastic_client.index(index: Elastic_index_name, body: document_h)
-        true
-      rescue => e
-        puts "Error indexing document: #{e}"
-        false
-      end
-    end
+  ###
+  # @description: Creates an hash to be inserted in the elastic search index
+  # @param document: Document
+  # @return {any}: Hash
+  ###
 end

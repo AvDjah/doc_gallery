@@ -16,8 +16,8 @@
           <div>
               <label for="">Enter Text</label>
               <div class="flex md:flex-row flex-col items-center" >
-                <%= form_with url: documents_path, method: :get, class: "w-full" do |form| %>
-                  <%= form.text_field :search_query, class: "p-2 w-full rounded-lg outline-none ring-1 ring-green-600 focus:ring-2" %>
+                <%= form_with url: documents_path, method: :get, class: "w-full", data: { turbo_stream: true } do |form| %>
+                  <%= form.text_field :search_query, class: "p-2 w-full rounded-lg outline-none ring-1 ring-green-600 focus:ring-2", value: @search_query  %>
                   <button class="my-3 px-5 py-1 bg-blue-600  rounded-lg text-white font-semibold" >Search</button>
                 <% end %>
               </div>
@@ -29,26 +29,8 @@
           </div>
       </div>
   </div>
-  <div class="my-3 p-2 bg-green-50 rounded-lg" >
-    <div class="text-xl my-2 font-bold lora-font" >
-      Results
-    </div>
-    <% if @result != nil %>
-      <% @result.each.with_index do |hit,index| %>
-        <div class="my-2 text-lg flex flex-row gap-4 ring-2 ring-green-700 p-4" >
-          <div class="font-bold text-green-800" ><%= index + 1 %>.</div>
-          <div>
-            <div>
-              Name: <span><%= hit["_source"]["title"] %></span>
-            </div>
-            <div>
-              Created By: <span><%= hit["_source"]["created_by"] %></span>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
+  
+  <%= render partial: "results" %>
 
   <div id="documents" class="min-w-full">
     <% @documents.each do |document| %>
