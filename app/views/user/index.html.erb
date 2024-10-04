@@ -1,0 +1,17 @@
+<div class="w-full ring-2 ring-green-800 bg-gray-50 md:p-8 p-4 rounded-lg" >
+  <div class="my-3" >
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
+  </div>
+  <div class="my-3 text-xl lora-font underline underline-offset-2" >
+    All Users
+  </div>
+  <div class="my-3" >
+    <% @users.each do |user|  %>
+      <div class="my-3" >
+        Name: <span class="font-bold text-green-700" ><%= user.username %></span>
+      </div>
+    <% end %>
+  </div>
+</div>
